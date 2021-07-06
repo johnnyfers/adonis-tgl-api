@@ -15,7 +15,8 @@
     "Contracts": "contracts"
   },
   "preloads": [
-    "./start/routes",
+    "./start/routes/user.routes.ts",
+    "./start/routes/gameSpecifications.routes.ts",
     "./start/kernel"
   ],
   "providers": [
