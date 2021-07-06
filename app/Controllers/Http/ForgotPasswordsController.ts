@@ -7,7 +7,7 @@ import moment from 'moment'
 import User from 'App/Models/User'
 import ResetPasswordValidator from 'App/Validators/ResetPasswordValidator'
 
-export default class ForgotPassWordsController {
+export default class ForgotPasswordsController {
     async store({ request, response }: HttpContextContract) {
         try {
             const email = request.input('email')
