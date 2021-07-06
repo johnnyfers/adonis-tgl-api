@@ -35,6 +35,17 @@ export default class UsersController {
         }
     }
 
+    async show({ params, response }: HttpContextContract) {
+        try {
+            const user = await User.findByOrFail('id', params.id)
+
+            return user
+        } catch (err) {
+            console.log(err)
+            return response.badRequest(err)
+        }
+    }
+
     async delete({ params, response }: HttpContextContract) {
         try {
             const user = await User.findByOrFail('id', params.id)
