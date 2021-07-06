@@ -44,13 +44,13 @@ export default class GameSpecificationsController {
     }
   }
 
-  public async delete({ response, params }: HttpContextContract) {
+  public async destroy({ response, params }: HttpContextContract) {
     try {
       const gameSpecification = await GameSpecification.findByOrFail('id', params.id)
 
-      return gameSpecification.delete()
+      await gameSpecification.delete()
     } catch (err) {
-      return response.badRequest(err)
+      return response.badRequest(err.message)
     }
   }
 }

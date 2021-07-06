@@ -50,9 +50,9 @@ export default class UsersController {
         try {
             const user = await User.findByOrFail('id', params.id)
 
-            return user.delete()
+            return await user.delete()
         } catch (err) {
-            return response.badRequest(err)
+            return response.badRequest(err.message)
         }
     }
 }
