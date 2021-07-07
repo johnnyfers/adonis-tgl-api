@@ -3,12 +3,15 @@ import Bet from 'App/Models/Bet'
 import Game from 'App/Models/Game'
 
 export default class GamesController {
-  public async index({ request }: HttpContextContract) {
+  public async index({ request, auth }: HttpContextContract) {
     const { page } = request.qs()
 
     const games = await Game.query()
+      .where('user_id', `${auth.user?.id}`)
       .preload('user')
-      .preload('bets')
+      .preload('bets', (postQuery) => {
+        postQuery.preload('specifications')
+      })
       .paginate(page, 15)
 
     const gamesJSON = games.serialize()
@@ -21,8 +24,6 @@ export default class GamesController {
       const data = request.only(['total_price'])
       const bets = await Bet.query().where('user_id', `${auth.user?.id}`).where('was_played', false)
 
-      console.log(bets.map(bet => bet.$attributes))
-
       const game = await Game.create({ ...data, userId: auth.user?.id })
 
       await Bet.query().where('user_id', `${auth.user?.id}`).where('was_played', false).delete()
@@ -31,8 +32,9 @@ export default class GamesController {
 
       game.bets.map(bet => bet.serialize())
 
-      return game
+      await Bet.query().where('user_id', `${auth.user?.id}`).where('was_played', false).update({wasPlayed: true})
 
+      return game
     } catch (err) {
       return response.badRequest(err.message)
     }
@@ -49,10 +51,11 @@ export default class GamesController {
       }
 
       await game.load('user')
-      await game.load('user')
+      await game.load('bets', (postQuery) => {
+        postQuery.preload('specifications')
+      })
 
       return game
-
     } catch (err) {
       return response.badRequest(err)
     }
@@ -65,7 +68,7 @@ export default class GamesController {
     try {
       const data = await request.input('total_price')
       const game = await Game.findByOrFail('id', params.id)
-      const bets = await Bet.all()
+      const bets = await Bet.query().where('user_id', `${auth.user?.id}`).where('was_played', true)
 
       if (game.userId !== auth.user?.id) {
         throw new Error('invalid request')
