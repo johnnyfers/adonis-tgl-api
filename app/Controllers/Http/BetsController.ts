@@ -6,7 +6,7 @@ import Bet from 'App/Models/Bet'
 export default class BetsController {
   public async index({ params }: HttpContextContract) {
     const bets = await Bet.query()
-      .where('spec_id', params.spec_id)
+      .where('spec_id', params.game_spec_id)
 
     return bets
   }
@@ -15,7 +15,7 @@ export default class BetsController {
     try {
       const payload = await request.validate(BetValidator)
 
-      const bet = await Bet.create({ ...payload, specId: params.id })
+      const bet = await Bet.create({ ...payload, specId: params.game_spec_id })
 
       return bet
 
