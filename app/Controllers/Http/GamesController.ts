@@ -3,20 +3,15 @@ import Bet from 'App/Models/Bet'
 import Game from 'App/Models/Game'
 
 export default class GamesController {
-  public async index({ request, auth }: HttpContextContract) {
-    const { page } = request.qs()
-
+  public async index({ auth }: HttpContextContract) {
     const games = await Game.query()
       .where('user_id', `${auth.user?.id}`)
       .preload('user')
       .preload('bets', (postQuery) => {
         postQuery.preload('specifications')
       })
-      .paginate(page, 15)
 
-    const gamesJSON = games.serialize()
-
-    return gamesJSON
+    return games
   }
 
   public async store({ request, response, auth }: HttpContextContract) {
@@ -32,7 +27,7 @@ export default class GamesController {
 
       game.bets.map(bet => bet.serialize())
 
-      await Bet.query().where('user_id', `${auth.user?.id}`).where('was_played', false).update({wasPlayed: true})
+      await Bet.query().where('user_id', `${auth.user?.id}`).where('was_played', false).update({ wasPlayed: true })
 
       return game
     } catch (err) {
@@ -40,7 +35,7 @@ export default class GamesController {
     }
   }
 
-  public async create({ }: HttpContextContract) { }
+  // public async create({ }: HttpContextContract) { }
 
   public async show({ params, auth, response }: HttpContextContract) {
     try {
@@ -61,8 +56,7 @@ export default class GamesController {
     }
   }
 
-  public async edit({ }: HttpContextContract) {
-  }
+  // public async edit({ }: HttpContextContract) { }
 
   public async update({ request, response, params, auth }: HttpContextContract) {
     try {

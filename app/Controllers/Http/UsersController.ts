@@ -4,8 +4,15 @@ import User from 'App/Models/User'
 import UserValidator from 'App/Validators/UserValidator'
 
 export default class UsersController {
-    async index() {
-        const users = await User.all()
+    async index({ request }: HttpContextContract) {
+        const { page } = request.qs()
+        
+        const users = await User.query()
+            .preload('games', (query) => {
+                query.preload('bets', (query) => {
+                    query.preload('specifications')
+                })
+            }).paginate(page, 10)
 
         return users
     }
