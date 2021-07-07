@@ -17,6 +17,9 @@ export default class Game extends BaseModel {
   public id: number
 
   @column()
+  public userId: number
+
+  @column()
   public totalPrice: number
 
   @belongsTo(() => User)

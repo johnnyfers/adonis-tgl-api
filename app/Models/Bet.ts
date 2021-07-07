@@ -1,11 +1,13 @@
 import {
   BaseModel,
+  beforeSave,
   BelongsTo,
   belongsTo,
   column
 } from '@ioc:Adonis/Lucid/Orm'
 
 import { DateTime } from 'luxon'
+import Game from './Game'
 
 import GameSpecification from './GameSpecification'
 
@@ -20,14 +22,33 @@ export default class Bet extends BaseModel {
   public dateString: string
 
   @column()
-  public specId: number
+  public userId: number
+  
+  @column()
+  public gameId: number
+
+  @column()
+  public wasPlayed: boolean
+
+  @column()
+  public gameSpecificationId: number
 
   @belongsTo(() => GameSpecification)
   public specifications: BelongsTo<typeof GameSpecification>
+
+  @belongsTo(() => Game)
+  public games: BelongsTo<typeof Game>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  @beforeSave()
+  public static async hashPassword(bet: Bet) {
+    if (!bet.$dirty.wasPlayed) {
+      bet.wasPlayed = false
+    }
+  }
 }

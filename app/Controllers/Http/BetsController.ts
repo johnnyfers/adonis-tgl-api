@@ -4,18 +4,24 @@ import BetValidator from 'App/Validators/BetValidator'
 import Bet from 'App/Models/Bet'
 
 export default class BetsController {
-  public async index({ params }: HttpContextContract) {
-    const bets = await Bet.query()
-      .where('spec_id', params.game_spec_id)
+  public async index({ request, params }: HttpContextContract) {
+    const { page } = request.qs()
 
-    return bets
+    const bets = await Bet.query()
+      .where('game_specification_id', params.game_spec_id)
+      .preload('specifications')
+      .paginate(page, 15)
+
+    const betsJSON = bets.serialize()
+
+    return betsJSON
   }
 
-  public async store({ request, response, params }: HttpContextContract) {
+  public async store({ request, response, params, auth }: HttpContextContract) {
     try {
       const payload = await request.validate(BetValidator)
 
-      const bet = await Bet.create({ ...payload, specId: params.game_spec_id })
+      const bet = await Bet.create({ ...payload, gameSpecificationId: params.game_spec_id, userId: auth.user?.id })
 
       return bet
 

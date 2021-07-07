@@ -18,6 +18,7 @@
     "./start/routes/account.routes.ts",
     "./start/routes/gameSpecifications.routes.ts",
     "./start/routes/bet.routes.ts",
+    "./start/routes/game.routes.ts",
     "./start/kernel"
   ],
   "providers": [
