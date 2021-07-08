@@ -6,7 +6,6 @@ export default class GamesController {
   public async index({ auth }: HttpContextContract) {
     const games = await Game.query()
       .where('user_id', `${auth.user?.id}`)
-      .preload('user')
       .preload('bets', (postQuery) => {
         postQuery.preload('specifications')
       })
@@ -21,13 +20,20 @@ export default class GamesController {
 
       const game = await Game.create({ ...data, userId: auth.user?.id })
 
-      await Bet.query().where('user_id', `${auth.user?.id}`).where('was_played', false).delete()
+      await Bet.query()
+        .where('user_id', `${auth.user?.id}`)
+        .where('was_played', false)
+        .delete()
+
       await game.related('bets').createMany(bets.map(bet => bet.$attributes))
       await game.load('bets')
 
       game.bets.map(bet => bet.serialize())
 
-      await Bet.query().where('user_id', `${auth.user?.id}`).where('was_played', false).update({ wasPlayed: true })
+      await Bet.query()
+        .where('user_id', `${auth.user?.id}`)
+        .where('was_played', false)
+        .update({ wasPlayed: true })
 
       return game
     } catch (err) {
@@ -46,6 +52,7 @@ export default class GamesController {
       }
 
       await game.load('user')
+
       await game.load('bets', (postQuery) => {
         postQuery.preload('specifications')
       })
@@ -62,14 +69,22 @@ export default class GamesController {
     try {
       const data = await request.input('total_price')
       const game = await Game.findByOrFail('id', params.id)
-      const bets = await Bet.query().where('user_id', `${auth.user?.id}`).where('was_played', true)
+
+      const bets = await Bet.query()
+        .where('user_id', `${auth.user?.id}`)
+        .where('was_played', true)
 
       if (game.userId !== auth.user?.id) {
         throw new Error('invalid request')
       }
 
-      await Bet.query().where('user_id', `${auth.user?.id}`).where('was_played', false).delete()
+      await Bet.query()
+        .where('user_id', `${auth.user?.id}`)
+        .where('was_played', false)
+        .delete()
+
       await game.related('bets').updateOrCreateMany(bets.map(bet => bet.$attributes))
+      
       await game.load('bets')
 
       game.bets.map(bet => bet.serialize())

@@ -4,11 +4,12 @@ import BetValidator from 'App/Validators/BetValidator'
 import Bet from 'App/Models/Bet'
 
 export default class BetsController {
-  public async index({ request, params }: HttpContextContract) {
+  public async index({ request, params, auth }: HttpContextContract) {
     const { page } = request.qs()
 
     const bets = await Bet.query()
       .where('game_specification_id', params.game_spec_id)
+      .where('user_id', `${auth.user?.id}`)
       .preload('specifications')
       .paginate(page, 15)
 
@@ -21,7 +22,11 @@ export default class BetsController {
     try {
       const payload = await request.validate(BetValidator)
 
-      const bet = await Bet.create({ ...payload, gameSpecificationId: params.game_spec_id, userId: auth.user?.id })
+      const bet = await Bet.create({
+        ...payload,
+        gameSpecificationId: params.game_spec_id,
+        userId: auth.user?.id
+      })
 
       return bet
 
