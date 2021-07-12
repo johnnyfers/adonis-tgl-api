@@ -6,9 +6,8 @@ import {
 } from '@ioc:Adonis/Lucid/Orm'
 
 import { DateTime } from 'luxon'
-import Game from './Game'
 
-import GameSpecification from './GameSpecification'
+import Game from './Game'
 
 export default class Bet extends BaseModel {
   @column({ isPrimary: true })
@@ -28,12 +27,6 @@ export default class Bet extends BaseModel {
 
   @column()
   public totalPrice: number
-
-  @column()
-  public gameSpecificationId: number
-
-  @belongsTo(() => GameSpecification)
-  public specifications: BelongsTo<typeof GameSpecification>
 
   @belongsTo(() => Game)
   public games: BelongsTo<typeof Game>

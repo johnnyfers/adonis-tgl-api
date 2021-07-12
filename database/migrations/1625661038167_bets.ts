@@ -13,9 +13,9 @@ export default class Bets extends BaseSchema {
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
       table
-        .integer('game_specification_id')
+        .integer('game_id')
         .unsigned()
-        .references('id').inTable('game_specifications')
+        .references('id').inTable('games')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
 

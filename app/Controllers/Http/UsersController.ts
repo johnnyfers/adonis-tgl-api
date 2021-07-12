@@ -1,3 +1,4 @@
+import Mail from '@ioc:Adonis/Addons/Mail'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 import User from 'App/Models/User'
@@ -8,11 +9,6 @@ export default class UsersController {
         const { page } = request.qs()
 
         const users = await User.query()
-            .preload('games', (query) => {
-                query.preload('bets', (query) => {
-                    query.preload('specifications')
-                })
-            })
             .paginate(page, 10)
 
         return users
@@ -23,6 +19,18 @@ export default class UsersController {
             const data = await request.validate(UserValidator)
 
             const user = await User.create(data)
+
+            await Mail.send(
+                message => {
+                    message
+                        .to(user!.email)
+                        .from('johnny@adonis.com', 'Johhny | Luby')
+                        .subject('Reset password')
+                        .htmlView('new_account', {
+                            name: user!.name
+                        })
+                }
+            )
 
             return user
         } catch (err) {
