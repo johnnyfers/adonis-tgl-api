@@ -10,7 +10,7 @@ export default class BetsController {
   public async index({ request, auth }: HttpContextContract) {
     const { page } = request.qs()
 
-    const bets = await Bet.query().where('user_id', `${auth.user?.id}`).paginate(page, 15)
+    const bets = await Bet.query().where('user_id', `${auth.user?.id}`).preload('games').paginate(page, 15)
 
     const betsJSON = bets.serialize()
 
@@ -39,7 +39,8 @@ export default class BetsController {
             .to(user!.email)
             .from('johnny@adonis.com', 'Johhny | Luby')
             .subject('New Bet')
-            .htmlView('new_bet', {
+            .htmlView('main', {
+              loadNewBet: true,
               totalPrice: totalPrice.toFixed(2).replace('.', ','),
               name: user!.name,
               link: 'www.tgl.com.dummy'

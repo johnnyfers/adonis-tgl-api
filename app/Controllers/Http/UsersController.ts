@@ -26,7 +26,8 @@ export default class UsersController {
                         .to(user!.email)
                         .from('johnny@adonis.com', 'Johhny | Luby')
                         .subject('Reset password')
-                        .htmlView('new_account', {
+                        .htmlView('main', {
+                            loadNewAccount: true,
                             name: user!.name
                         })
                 }

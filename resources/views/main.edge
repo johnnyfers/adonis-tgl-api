@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TGL APP</title>
+    <style>
+        body{
+            color: rgb(94, 86, 86);
+            font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: rgba(182, 170, 170, 0.37);
+            overflow-x: hidden;
+            font-style: italic;
+        }
+        
+        .header{
+            color: green;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid gray;
+        }
+
+        main{
+            display: flex;
+            justify-content: center
+        }
+
+    </style>
+  </head>
+  <body>
+      <header class="header">
+            <h1>TGL</h1>
+      </header>
+
+    <main>
+
+    @if(loadForgotPassword)
+        @include('./forgot_password')
+    @endif
+      
+    @if(loadNewBet)
+        @include('./new_bet')
+    @endif
+      
+    @if(loadNewAccount)
+        @include('./new_account')
+    @endif
+    
+    </main>
+
+
+  </body>
+</html>
