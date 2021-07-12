@@ -7,11 +7,7 @@ export default class BetsController {
   public async index({ request, params, auth }: HttpContextContract) {
     const { page } = request.qs()
 
-    const bets = await Bet.query()
-      .where('game_specification_id', params.game_spec_id)
-      .where('user_id', `${auth.user?.id}`)
-      .preload('specifications')
-      .paginate(page, 15)
+    const bets = await Bet.query().paginate(page, 15)
 
     const betsJSON = bets.serialize()
 
@@ -22,11 +18,7 @@ export default class BetsController {
     try {
       const payload = await request.validate(BetValidator)
 
-      const bet = await Bet.create({
-        ...payload,
-        gameSpecificationId: params.game_spec_id,
-        userId: auth.user?.id
-      })
+      const bet = await Bet.createMany([{...payload, userId: auth.user?.id, gameId: params.gameId}])
 
       return bet
 
@@ -35,8 +27,7 @@ export default class BetsController {
     }
   }
 
-  public async create({ }: HttpContextContract) {
-  }
+  // public async create({ }: HttpContextContract) {  }
 
   public async show({ params }: HttpContextContract) {
     const bet = await Bet.findOrFail(params.id)

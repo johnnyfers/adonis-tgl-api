@@ -1,6 +1,5 @@
 import {
   BaseModel,
-  beforeSave,
   BelongsTo,
   belongsTo,
   column
@@ -28,7 +27,7 @@ export default class Bet extends BaseModel {
   public gameId: number
 
   @column()
-  public wasPlayed: boolean
+  public totalPrice: number
 
   @column()
   public gameSpecificationId: number
@@ -45,10 +44,4 @@ export default class Bet extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
 
-  @beforeSave()
-  public static async hashPassword(bet: Bet) {
-    if (!bet.$dirty.wasPlayed) {
-      bet.wasPlayed = false
-    }
-  }
 }

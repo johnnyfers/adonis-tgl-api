@@ -19,15 +19,7 @@ export default class Bets extends BaseSchema {
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
 
-      table
-        .integer('game_id')
-        .unsigned()
-        .references('id').inTable('games')
-        .onUpdate('CASCADE')
-        .onDelete('CASCADE')
-
-      table.boolean('was_played').nullable()
-
+      table.float('total_price').notNullable()
       table.string('numbers').notNullable()
       table.string('date_string').notNullable()
 
