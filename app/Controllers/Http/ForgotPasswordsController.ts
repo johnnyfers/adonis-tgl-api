@@ -28,20 +28,19 @@ export default class ForgotPasswordsController {
                             loadForgotPassword: true,
                             email,
                             token: user!.rememberMeToken,
-                            link: `${request.input('request_url')}?token=${user!.rememberMeToken}`
+                            link: 'http://localhost:3000/recover'
                         })
                 }
             )
 
         } catch (err) {
-            return response.badRequest(err)
+            return response.badRequest(err.message)
         }
     }
 
     async update({ request, response }: HttpContextContract) {
-        const { token, password } = await request.validate(ResetPasswordValidator)
-
         try {
+            const { token, password } = await request.validate(ResetPasswordValidator)
             const user = await User.findByOrFail('remember_me_token', token)
 
             const tokenExpired = moment()
@@ -49,7 +48,7 @@ export default class ForgotPasswordsController {
                 .isAfter(user.tokenCreatedAt)
 
             if (tokenExpired) {
-                return response.status(401).send('expired token')
+                throw new Error('expired token')
             }
 
             user.rememberMeToken = ''
@@ -59,7 +58,7 @@ export default class ForgotPasswordsController {
             await user.save()
 
         } catch (err) {
-            return response.badRequest(err)
+            return response.badRequest(err.message)
         }
     }
 }

@@ -6,7 +6,7 @@ export default class GamesController {
   public async index() {
     const games = await Game.all()
 
-    return games
+    return games.reverse()
   }
 
   public async store({ request, response }: HttpContextContract) {

@@ -14,9 +14,15 @@ export default class UsersController {
         return users
     }
 
-    async store({ request, response }: HttpContextContract) {
+    async create({ request, response }: HttpContextContract) {
         try {
             const data = await request.validate(UserValidator)
+            
+            const userAlreadyExists = await User.findBy('email', data.email)
+
+            if(userAlreadyExists){
+                throw new Error('User already exists')
+            }
 
             const user = await User.create(data)
 
@@ -35,7 +41,7 @@ export default class UsersController {
 
             return user
         } catch (err) {
-            return response.badRequest(err)
+            return response.badRequest(err.message)
         }
     }
 

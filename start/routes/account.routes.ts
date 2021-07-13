@@ -10,9 +10,10 @@ Route.delete('users/:id', 'UsersController.delete')
 Route.put('users/:id', 'UsersController.update')
     .middleware(['auth'])
     
-Route.post('users', 'UsersController.store')
+Route.post('users', 'UsersController.create')
 
 Route.post('sessions', 'SessionsController.store')
 
 Route.post('reset', 'ForgotPasswordsController.store')
+
 Route.put('reset', 'ForgotPasswordsController.update')
