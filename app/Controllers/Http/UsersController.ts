@@ -31,7 +31,7 @@ export default class UsersController {
                     message
                         .to(user!.email)
                         .from('johnny@adonis.com', 'Johhny | Luby')
-                        .subject('Reset password')
+                        .subject('Welcome to TGL')
                         .htmlView('main', {
                             loadNewAccount: true,
                             name: user!.name
