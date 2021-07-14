@@ -45,10 +45,10 @@ export default class UsersController {
         }
     }
 
-    async update({ request, response, params }: HttpContextContract) {
+    async update({ request, response, auth }: HttpContextContract) {
         try {
             const data = await request.validate(UserValidator)
-            const user = await User.findByOrFail('id', params)
+            const user = await User.findByOrFail('id', auth.user?.id)
 
             await user.merge(data).save()
 
@@ -58,14 +58,14 @@ export default class UsersController {
         }
     }
 
-    async show({ params, response }: HttpContextContract) {
+    async show({ auth, response }: HttpContextContract) {
         try {
-            const user = await User.findByOrFail('id', params.id)
+            const user = await User.findByOrFail('id', auth.user?.id)
 
             return user
         } catch (err) {
             console.log(err)
-            return response.badRequest(err)
+            return response.badRequest(err.message)
         }
     }
 

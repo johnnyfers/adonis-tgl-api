@@ -1,15 +1,16 @@
 import Route from '@ioc:Adonis/Core/Route'
 
-Route.get('users/:id', 'UsersController.show')
+Route.get('user', 'UsersController.show')
+    .middleware(['auth'])
 
 Route.get('users', 'UsersController.index')
 
 Route.delete('users/:id', 'UsersController.delete')
     .middleware(['auth', 'UserAdmin'])
 
-Route.put('users/:id', 'UsersController.update')
+Route.put('users', 'UsersController.update')
     .middleware(['auth'])
-    
+
 Route.post('users', 'UsersController.create')
 
 Route.post('sessions', 'SessionsController.store')

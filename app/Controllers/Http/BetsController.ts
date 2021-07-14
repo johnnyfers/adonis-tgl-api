@@ -10,7 +10,11 @@ export default class BetsController {
   public async index({ request, auth }: HttpContextContract) {
     const { page } = request.qs()
 
-    const bets = await Bet.query().where('user_id', `${auth.user?.id}`).preload('games').paginate(page, 15)
+    const bets = await Bet.query()
+      .where('user_id', `${auth.user?.id}`)
+      .preload('games')
+      .orderBy('id', 'desc')
+      .paginate(page, 6)
 
     const betsJSON = bets.serialize()
 
