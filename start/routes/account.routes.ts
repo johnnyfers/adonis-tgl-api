@@ -13,8 +13,8 @@ Route.put('users', 'UsersController.update')
 
 Route.post('users', 'UsersController.create')
 
-Route.post('sessions', 'SessionsController.store')
-
 Route.post('reset', 'ForgotPasswordsController.store')
 
 Route.put('reset', 'ForgotPasswordsController.update')
+
+Route.post('sessions', 'SessionsController.store')

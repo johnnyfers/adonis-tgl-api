@@ -33,6 +33,6 @@ async function runMigrations() {
  */
 configure({
   files: ['__tests__/**/*.spec.ts'],
-  before: [runMigrations,startHttpServer],
+  before: [startHttpServer,runMigrations],
   after: [rollbackMigrations],
 })

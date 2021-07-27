@@ -1,5 +1,6 @@
 import Mail from '@ioc:Adonis/Addons/Mail'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import Env from '@ioc:Adonis/Core/Env'
 
 import User from 'App/Models/User'
 import UserValidator from 'App/Validators/UserValidator'
@@ -17,27 +18,29 @@ export default class UsersController {
     async create({ request, response }: HttpContextContract) {
         try {
             const data = await request.validate(UserValidator)
-            
+
             const userAlreadyExists = await User.findBy('email', data.email)
 
-            if(userAlreadyExists){
+            if (userAlreadyExists) {
                 throw new Error('User already exists')
             }
 
             const user = await User.create(data)
 
-            await Mail.send(
-                message => {
-                    message
-                        .to(user!.email)
-                        .from('johnny@adonis.com', 'Johhny | Luby')
-                        .subject('Welcome to TGL')
-                        .htmlView('main', {
-                            loadNewAccount: true,
-                            name: user!.name
-                        })
-                }
-            )
+            if (Env.get('NODE_ENV') !== 'testing') {
+                await Mail.send(
+                    message => {
+                        message
+                            .to(user!.email)
+                            .from('johnny@adonis.com', 'Johhny | Luby')
+                            .subject('Welcome to TGL')
+                            .htmlView('main', {
+                                loadNewAccount: true,
+                                name: user!.name
+                            })
+                    }
+                )
+            }
 
             return user
         } catch (err) {

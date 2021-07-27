@@ -12,7 +12,7 @@ test.group('Authentication', (group) => {
             password: 'secret'
         }
 
-        await User.create(payload)
+     await User.create(payload)
     })
 
     test('ensure user can be authenticated with valid credentials', async (assert) => {
