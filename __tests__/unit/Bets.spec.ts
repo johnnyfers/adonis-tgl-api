@@ -33,13 +33,13 @@ test.group('Bets CRUD', (group) => {
         const payload = {
             bets: [
                 {
-                    game_id: 1,
+                    game_id: 2,
                     numbers: '9, 26, 55, 67, 10',
                     date_string: '12/12/2021',
                     total_price: 2.5
                 },
                 {
-                    game_id: 1,
+                    game_id: 2,
                     numbers: '9, 26, 55, 67, 12',
                     date_string: '12/12/2021',
                     total_price: 2.0
@@ -49,7 +49,7 @@ test.group('Bets CRUD', (group) => {
 
         const bets = await Bet.createMany(
             payload.bets.map((item: {}) =>
-                item = { ...item, userId: 1})
+                item = { ...item, userId: 2})
         )
 
         assert.exists(bets)
@@ -62,11 +62,12 @@ test.group('Bets CRUD', (group) => {
     })
 
     test('ensure a Bet can be updated', async (assert) => {
-        const bet = await Bet.findByOrFail('id', 1)
+        const bet = await Bet.findByOrFail('id', 3)
 
         const payload = {
             numbers: '1, 2, 3, 4, 10',
-            date_string: '12/12/2021'
+            date_string: '12/12/2021',
+            total_price: 5
         }
 
         await bet.merge(payload).save()
@@ -75,7 +76,7 @@ test.group('Bets CRUD', (group) => {
     })
 
     test('ensure a Bet can be deleted', async (assert) => {
-        const bet = await Bet.findByOrFail('id', 1)
+        const bet = await Bet.findByOrFail('id', 3)
 
         await bet!.delete()
 

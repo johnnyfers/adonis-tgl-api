@@ -67,7 +67,6 @@ export default class UsersController {
 
             return user
         } catch (err) {
-            console.log(err)
             return response.badRequest(err.message)
         }
     }

@@ -1,20 +1,9 @@
-import User from 'App/Models/User'
 import test from 'japa'
 import supertest from 'supertest'
 
 const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
 
-test.group('User', (group) => {
-    group.before(async () => {
-        const payload = {
-            name: 'Admin',
-            email: 'admin@adonisjs.com',
-            password: 'Admin',
-        }
-
-        await User.create({ ...payload, isAdmin: true })
-    })
-
+test.group('User Http', () => {
     test('ensure user can be registered with valid credentials', async (assert) => {
         const response = await supertest(BASE_URL).post('/users').send({
             name: 'johnny',
@@ -32,6 +21,24 @@ test.group('User', (group) => {
         assert.equal(response.ok, true)
     })
 
+    test('ensure an user can be updated', async (assert) => {
+        const { body: { token } } = await supertest(BASE_URL).post('/sessions').send({
+            email: 'test@adonisjs.com',
+            password: 'secret'
+        })
+
+        const response = await supertest(BASE_URL)
+        .put('/users')
+        .send({
+            name: 'teeeeste',
+            email: 'testeee@adonisjs.com',
+            password: 'teste'
+        })
+        .set('Authorization', `Bearer ${token}`)
+
+        assert.equal(response.ok, true)
+    })
+
     test('ensure user  user can be deleted', async (assert) => {
         const { body: { token } } = await supertest(BASE_URL).post('/sessions').send({
             email: 'admin@adonisjs.com',
@@ -39,10 +46,8 @@ test.group('User', (group) => {
         })
 
         const response = await supertest(BASE_URL)
-        .delete('/users/2')
+        .delete('/users/1')
         .set('Authorization', `Bearer ${token}`)
-
-        console.log(response)
 
         assert.equal(response.ok, true)
     })

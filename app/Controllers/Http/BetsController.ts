@@ -1,4 +1,5 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import Env from '@ioc:Adonis/Core/Env'
 
 import BetValidator from 'App/Validators/BetValidator'
 import Bet from 'App/Models/Bet'
@@ -37,20 +38,22 @@ export default class BetsController {
         totalPrice += item.total_price
       })
 
-      await Mail.send(
-        message => {
-          message
-            .to(user!.email)
-            .from('johnny@adonis.com', 'Johhny | Luby')
-            .subject('New Bet')
-            .htmlView('main', {
-              loadNewBet: true,
-              totalPrice: totalPrice.toFixed(2).replace('.', ','),
-              name: user!.name,
-              link: 'www.tgl.com.dummy'
-            })
-        }
-      )
+      if (Env.get('NODE_ENV') !== 'testing') {
+        await Mail.send(
+          message => {
+            message
+              .to(user!.email)
+              .from('johnny@adonis.com', 'Johhny | Luby')
+              .subject('New Bet')
+              .htmlView('main', {
+                loadNewBet: true,
+                totalPrice: totalPrice.toFixed(2).replace('.', ','),
+                name: user!.name,
+                link: 'www.tgl.com.dummy'
+              })
+          }
+        )
+      }
 
       return bets
     } catch (err) {
@@ -58,15 +61,11 @@ export default class BetsController {
     }
   }
 
-  // public async create({ }: HttpContextContract) {  }
-
   public async show({ params }: HttpContextContract) {
     const bet = await Bet.findOrFail(params.id)
 
     return bet
   }
-
-  //public async edit({ }: HttpContextContract) { }
 
   public async update({ request, response, params }: HttpContextContract) {
     try {

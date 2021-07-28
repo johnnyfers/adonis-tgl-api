@@ -26,7 +26,7 @@ test.group('Games CRUD', () => {
     })
 
     test('ensure a game can be updated', async (assert) => {
-        const game = await Game.findByOrFail('id', 1)
+        const game = await Game.findByOrFail('id', 2)
 
         const payload = {
             type: 'Lotomania',
@@ -44,7 +44,7 @@ test.group('Games CRUD', () => {
     })
 
     test('ensure a game can be deleted', async (assert) => {
-        const game = await Game.findByOrFail('id', 1)
+        const game = await Game.findByOrFail('id', 2)
         
         await game!.delete()
         
