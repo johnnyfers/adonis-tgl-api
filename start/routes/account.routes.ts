@@ -18,3 +18,5 @@ Route.post('reset', 'ForgotPasswordsController.store')
 Route.put('reset', 'ForgotPasswordsController.update')
 
 Route.post('sessions', 'SessionsController.store')
+
+//teste
